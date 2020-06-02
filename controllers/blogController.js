@@ -1,19 +1,11 @@
 import { Blog } from '../database/models';
+import e from 'express';
 
 class blogsController {
     static getAllBlogs(req, res) {
         res.header('Access-Control-Allow-Origin', '*');
         Blog.find({}, (err, result) => {
             res.status(200).json({
-                data: result
-            });
-        });
-    }
-
-    static getBlog(req, res) {
-        res.header('Access-Control-Allow-Origin', '*');
-        Blog.findById(req.params.id, (err, result) => {
-            res.status(200).json ({
                 data: result
             });
         });
@@ -50,12 +42,15 @@ class blogsController {
 
     static updateBlog(req, res) {
         res.header('Access-Control-Allow-Origin', '*');  
-        Blog.findByIdAndUpdate(req.params.id, req.body, (err, result) => {
-            if(err) return next(err);
-            res.json(result)
-        });
+        let blog = Blog.findByIdAndUpdate(req.params.id, (err, result) => {
+            blog.title = req.body.title
+            blog.content = req.body.content
+            blog.author = req.body.author
+            blog.img = req.body.img
+            blog.tags = req.body.tags
+            blog.save()
+        })
     }
-
 }
 
 export default blogsController;
